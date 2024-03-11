@@ -1,2 +1,2 @@
 # mechMNISTic
-Understanding simple MLP networks trained on MNIST
+Understanding small MLP networks trained on MNIST
