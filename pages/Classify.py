@@ -4,7 +4,6 @@ import matplotlib as mpl
 import functools
 import torch
 import numpy as np
-import torch.nn.functional as F
 
 from skimage.transform import resize
 from streamlit_drawable_canvas import st_canvas
@@ -16,8 +15,7 @@ from Home import (
     examples,
     test_examples,
     weights,
-    output_weights,
-    train_activations
+    output_weights
 )
 from pages.Neurons import show_neuron
 from model import center_transform
@@ -43,21 +41,6 @@ if "stroke_width" not in st.session_state:
     st.session_state["stroke_width"] = 20
 
 # ============== FUNCTIONALITY ==============
-
-
-def get_similar_examples(activations, n=3):
-    # distances = torch.mm(F.normalize(activations.unsqueeze(0), dim=0), train_activations.t())
-    print(train_activations.size(), activations.size())
-    distance_matrix = train_activations.t() - activations.unsqueeze(1)
-    print(distance_matrix.size())
-    distances = torch.abs(torch.sum(distance_matrix, dim=0))
-    print(distances.size())
-    print(distances)
-    values, indices = torch.topk(distances, n, largest=False)
-    print(values)
-    print(indices)
-    return [examples[i][0] for i in indices]
-
 
 def classification(draw):
     input_container = st.empty()
@@ -127,19 +110,6 @@ def classification(draw):
             probabilities.unsqueeze(0).t(), square=False, axis=True, figsize=(1, 1.7),
             yt=[i for i in range(len(logits))], colorbar=False
         ))
-
-    # with other_col:
-    #     st.subheader("Similar Examples")
-    #     similar_cols = st.columns(len(similar_examples))
-    #     for i, similar_example in enumerate(similar_examples):
-    #         with similar_cols[i]:
-    #             plot(display.raw(similar_example, colorbar=False))
-    #
-    #     _, similar_activations = model(similar_examples[0].unsqueeze(0))
-    #     plot(display.raw(
-    #         similar_activations[1][0], square=False, figsize=((len(activations) / 3), 2), axis=True,
-    #         xt=[], colorbar_kwargs={"orientation": "vertical", "pad": 0.01}
-    #     ))
 
     neuron_ticks = [i for i in range(len(activations)) if i % 5 == 0]
 
@@ -228,12 +198,6 @@ def classification(draw):
 
     st.subheader(f"Neuron {neuron_to_view}")
     show_neuron(0, neuron_to_view)
-
-    # st.subheader("Combined Feature Embedding")
-    # width = 0.3
-    # col, _ = st.columns([width, 1 - width])
-    # with col:
-    #     plot(display.raw(combined_embedding, colorbar=True, cmap="coolwarm"))
 
 
 # ============== PAGE ==============

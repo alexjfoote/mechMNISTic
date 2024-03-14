@@ -40,7 +40,6 @@ def load():
     full_weights = []
 
     for i, (name, parameters) in enumerate(model.named_parameters()):
-        # Should I include the bias?
         if "weight" not in name:
             continue
 
@@ -49,16 +48,10 @@ def load():
     weights = torch.stack(full_weights[:-1])
     output_weights = full_weights[-1]
 
-    # with open(f"{model_path}/layer_to_activations.json") as ifh:
-    #     layer_to_activations = json.load(ifh)
-    #     print(torch.tensor(layer_to_activations["0"]).size())
-    #     train_activations = F.normalize(torch.tensor(layer_to_activations["0"]), dim=0)
-    train_activations = None
-
-    return statistics, clusters, indexing, examples, test_examples, model, weights, output_weights, train_activations
+    return statistics, clusters, indexing, examples, test_examples, model, weights, output_weights
 
 
-statistics, clusters, indexing, examples, test_examples, model, weights, output_weights, train_activations = load()
+statistics, clusters, indexing, examples, test_examples, model, weights, output_weights = load()
 
 # ============== PAGE ==============
 
